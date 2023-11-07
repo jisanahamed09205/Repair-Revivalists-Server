@@ -27,6 +27,8 @@ async function run() {
     await client.connect();
 
     const serviceCollection = client.db('RepairRevivalists').collection('services');
+    const bookingCollection = client.db('RepairRevivalists').collection('bookings');
+    //booking or purched services
 
     //service card 
     app.get('/services',async(req,res)=>{
@@ -42,6 +44,13 @@ async function run() {
       const result = await serviceCollection.findOne(query)
       res.send(result)
     })
+
+    //bookings
+    app.post('/bookings',async(req,res)=>{
+      const booking = req.body;
+      const result = await bookingCollection.insertOne(booking);
+      res.send(result)
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
