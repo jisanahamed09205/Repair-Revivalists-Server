@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require ('cors');
 require('dotenv').config()
 const app = express();
@@ -28,10 +28,19 @@ async function run() {
 
     const serviceCollection = client.db('RepairRevivalists').collection('services');
 
+    //service card 
     app.get('/services',async(req,res)=>{
         const cursor = serviceCollection.find();
         const result = await cursor.toArray();
         res.send(result);
+    })
+
+    //service Details
+    app.get('/serviceDetails/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await serviceCollection.findOne(query)
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection
