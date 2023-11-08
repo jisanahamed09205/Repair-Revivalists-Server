@@ -45,6 +45,39 @@ async function run() {
       res.send(result)
     })
 
+      //service data get to update
+      app.get('/updateService/:id',async(req,res)=>{
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await serviceCollection.findOne(query);
+        res.send(result);
+      })
+
+      //service update
+      app.put('/updatedService/:id',async(req,res)=>{
+        const id =req.params.id;
+        const filter = {_id: new ObjectId(id)};
+        const options = { upsert: true};
+        const updatedService = req.body;
+        const service ={
+          $set: {
+                service_name: updatedService.service_name,
+                userEmail: updatedService.userEmail,
+                service_provider_name: updatedService.service_provider_name,
+                service_provider_img: updatedService.service_provider_img,
+                service_area: updatedService.service_area,
+                service_description: updatedService.service_description,
+                details: updatedService.details,
+                service_price: updatedService.service_price,
+                service_img: updatedService.service_img
+          }
+        }
+
+        const result = await serviceCollection.updateOne(filter,service,options)
+        res.send(result);
+
+      })
+
     //bookings
     app.post('/bookings',async(req,res)=>{
       const booking = req.body;
@@ -58,6 +91,14 @@ async function run() {
       console.log(newService);
       const result = await serviceCollection.insertOne(newService)
       res.send(result)
+    })
+
+    //Delete Service
+    app.delete('/service/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await serviceCollection.deleteOne(query);
+      res.send(result);
     })
 
     // Send a ping to confirm a successful connection
